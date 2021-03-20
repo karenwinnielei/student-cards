@@ -107,7 +107,7 @@ function App(props) {
               <div>{student.university}</div>
               <div>GPA: {Number.parseFloat(`${student.gpa}`).toPrecision(2)}</div>
               <div>Enrolled in {student.enrolledPrograms}</div>
-              <div>{student.completedPrograms.length > 0 ? `Completed ${student.completedPrograms}` : null }</div>
+              <div>{student.completedPrograms.length > 0 ? `Completed ${student.completedPrograms}` : 'No Programs Completed' }</div>
               <div>Intent Score: {student.intent}</div>
               <div>Skill Score: {student.skillPoints}</div>
             </div>
