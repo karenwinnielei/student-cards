@@ -8,6 +8,11 @@ body {
   box-sizing: border-box;
 }
 
+.App {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .filter-container {
   display: flex;
   flex-flow: row wrap;
@@ -21,11 +26,6 @@ body {
   padding: 2% 10%;
   font-weight: bold;
 }
-
-.filter-btn:active {
-  background-color: green;
-}
-
 
 .card-container {
   display: flex;

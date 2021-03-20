@@ -2,6 +2,7 @@ import { mockSearchData, mockStudentData } from './mockData';
 import './blueprint.css';
 import { Button, Card, Elevation } from '@blueprintjs/core';
 import { useState } from 'react';
+import { css, cx } from '@emotion/css';
 
 import './App.css';
 
@@ -12,28 +13,39 @@ function App(props) {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [isGreen, setGreen] = useState(false);
+  const [toggle, setToggle] = useState(false);
 
   const handleClick = (id) => {
     const result = mockStudentData.filter((data) => {
       return data.filterIds.includes(id);
     });
 
-    const greenButton = mockSearchData.filter((data) => {
-      return data._id.includes(id);
+    const allStudents = mockStudentData.map((student) => {
+      return student;
     });
 
-    // console.log('green', greenButton);
-    // console.log(id);
+    setActiveFilter(id);
+    setToggle(!toggle);
+
+    const clickedFilter = document.getElementById(`${id}`);
+    clickedFilter.style.backgroundColor = 'green';
+
+    const previousFilter = document.getElementById(`${activeFilter}`);
 
     setDisplayedStudents(result);
-    setActiveFilter(id);
 
-    if (id) {
-      setGreen(!isGreen);
+    if (previousFilter) {
+      previousFilter.style.backgroundColor = 'white';
+    } else {
+      return;
+    }
+
+    if (toggle && clickedFilter.style.backgroundColor === 'white') {
+      clickedFilter.style.backgroundColor = 'green';
+    } else if (!toggle) {
+      setDisplayedStudents(allStudents);
     }
   };
-
 
   return (
     <div className='App'>
@@ -42,17 +54,16 @@ function App(props) {
           if (Math.floor(index / 6) + 1 === currentPage) {
             return (
               <Button
-                style={
-                  isGreen
-                    ? { backgroundColor: 'green' }
-                    : { backgroundColor: 'white' }
-                }
+                id={filter._id}
+                style={{ backgroundColor: 'white' }}
                 className='filter-btn'
                 onClick={() => handleClick(filter._id)}
               >
                 {filter.emoticon} {filter.title}
               </Button>
             );
+          } else {
+            return null;
           }
         })}
       </div>
@@ -73,21 +84,30 @@ function App(props) {
       </div>
 
       <div>
-        Page {currentPage} of{' '}
-        {Math.floor(mockSearchData.length / 6) + 1} results
+        <p
+          className={css`
+            padding: 0 3%;
+          `}
+        >
+          Page {currentPage} of{' '}
+          {Math.floor(mockSearchData.length / 6) + 1} filters
+        </p>
       </div>
       <div className='card-container'>
         {displayedStudents.map((student) => (
-          <Card className='student-cards bp3-elevation-2'>
+          <Card className='student-cards' elevation={Elevation.TWO}>
             <div className='photo-container'>
-              <img src={student.profilePic} />
+              <img
+                src={student.profilePic}
+                alt='student profile pic'
+              />
             </div>
             <div className='text-container'>
               <div style={{ fontWeight: 'bold' }}>{student.name}</div>
               <div>{student.university}</div>
-              <div>GPA: {student.gpa}</div>
-              <div>Enrolled in {student.enroledPrograms}</div>
-              <div>Completed {student.completedPrograms}</div>
+              <div>GPA: {Number.parseFloat(`${student.gpa}`).toPrecision(2)}</div>
+              <div>Enrolled in {student.enrolledPrograms}</div>
+              <div>{student.completedPrograms.length > 0 ? `Completed ${student.completedPrograms}` : null }</div>
               <div>Intent Score: {student.intent}</div>
               <div>Skill Score: {student.skillPoints}</div>
             </div>
